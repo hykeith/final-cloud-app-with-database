@@ -49,6 +49,66 @@
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
             <!--HINT Display exam results-->
+            <div class="container-fluid my-5">
+                <div class="row">
+                  <div class="col-md-8 mx-auto">
+                    <div class="card">
+                      <div class="card-body">
+                        {% if total_score >= course.passing_score %}
+                        <div class="alert alert-success">
+                          <h4>Congratulations!</h4>
+                          <p>You passed the exam with a score of {{ total_score }}/{{ course.total_grade }}!</p>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-danger">
+                          <h4>Sorry!</h4>
+                          <p>You failed the exam with a score of {{ total_score }}/{{ course.total_grade }}.</p>
+                        </div>
+                        {% endif %}
+                        
+                        <h5 class="mt-4">Exam Results</h5>
+                        {% for question in course.question_set.all %}
+                        <div class="card mt-3">
+                          <div class="card-header">
+                            <strong>{{ question.text }}</strong>
+                          </div>
+                          <div class="card-body">
+                            {% for choice in question.choice_set.all %}
+                            {% if choice.is_correct %}
+                            {% if choice.id in selected_choice_ids %}
+                            <div class="alert alert-success">
+                              <i class="fas fa-check"></i> {{ choice.text }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-secondary">
+                              <i class="fas fa-check"></i> {{ choice.text }}
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            {% if choice.id in selected_choice_ids %}
+                            <div class="alert alert-danger">
+                              <i class="fas fa-times"></i> {{ choice.text }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-secondary">
+                              {{ choice.text }}
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if total_score < course.passing_score %}
+                        <a href="{% url 'onlinecourse:enroll' course.id %}" class="btn btn-primary mt-3">Re-take Exam</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
         </div>
     </div>
 </body>
